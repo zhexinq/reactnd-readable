@@ -1,0 +1,51 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  margin-top: 20px;
+  height: 150px;
+  padding: 20px;
+  color: black;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+.container .Action {
+  float: left;
+}
+
+.container .Filter {
+  float: right;
+}
+
+.PostsTable {
+  max-width: 1200px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.PostsTable tr {
+  cursor: pointer;
+}
+
+.react-bs-table-sizePerPage-dropdown {
+  margin-left: -85%;
+}
+
+.react-bs-table-sizePerPage-dropdown .dropdown-menu {
+  left: 47.5%;
+}

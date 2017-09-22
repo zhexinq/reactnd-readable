@@ -1,37 +1,36 @@
 import React, { Component } from 'react';
 import logo from '../anonymous-logo.svg';
 import '../App.css';
-import '../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as ReadableAPI from '../utils/ReadableAPI'
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { Button, DropdownButton, MenuItem } from 'react-bootstrap'
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
 import { addPost, fetchPosts } from '../actions'
+import Post from './Post'
+import PostList from './PostList'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
 
 class App extends Component {
-  posts = []
-  options = {
-    defaultSortName: 'voteScore',
-    defaultSortOrder: 'desc',
-    onRowClick: e => alert(JSON.stringify(e))
+  constructor(props) {
+    super(props);
+
+    this.toggleFilter = this.toggleFilter.bind(this)
+    this.toggleSort = this.toggleSort.bind(this)
+    this.state = {
+      filterDropdownOpen: false,
+      sortDropdownOpen: false
+    };
   }
 
-  populatePosts() {
-    for (let i = 0; i < 100; i++) {
-      this.posts.push(
-        {
-          id: uuid(),
-          timestamp: i,
-          title: 'post title',
-          body: 'post body',
-          author: 'author',
-          category: 'category',
-          voteScore: i,
-          deleted: false
-        }
-      )
-    }
+  toggleFilter() {
+    this.setState({
+      filterDropdownOpen: !this.state.filterDropdownOpen
+    });
+  }
+
+  toggleSort() {
+    this.setState({
+      sortDropdownOpen: !this.state.sortDropdownOpen
+    });
   }
 
   componentDidMount() {
@@ -39,10 +38,22 @@ class App extends Component {
     getPosts()
   }
 
+  onPostSelect() {
+
+  }
 
   render() {
     console.log(this.props)
     const { posts } = this.props
+    const posts_n = []
+
+    for (let i = 1; i <= 10; i++) {
+      posts.forEach( p => {
+        const copy = Object.assign({}, p)
+        copy.id = uuid()
+        posts_n.push(copy)
+      } )
+    }
 
     return (
       <div className="App">
@@ -51,26 +62,44 @@ class App extends Component {
           <h2>Welcome to Readable!</h2>
         </div>
 
-        <div className="container">
-          <div className="Action">
-            <Button bsStyle="primary">Add post</Button>
-          </div>
-          <div className="Filter">
-            <DropdownButton title="Category" id="Dropdown">
-              <MenuItem eventKey="1">Category1</MenuItem>
-              <MenuItem eventKey="2">Category2</MenuItem>
-            </DropdownButton>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-md-10 align-self-start'>
+              <Button outline color='primary' className='Action'>Add post</Button>
+            </div>
+            <div className='col-md-1 align-self-end'>
+              <Dropdown className='Sort' tether isOpen={this.state.sortDropdownOpen} toggle={this.toggleSort}>
+                <DropdownToggle caret>
+                  Sort
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem>Date</DropdownItem>
+                  <DropdownItem>Vote</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+            <div className='col-md-1 align-self-end'>
+              <Dropdown className='Filter' tether isOpen={this.state.filterDropdownOpen} toggle={this.toggleFilter}>
+                <DropdownToggle caret>
+                  Category
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem>Category1</DropdownItem>
+                  <DropdownItem>Category2</DropdownItem>
+                  <DropdownItem>Category3</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
         </div>
 
-        <BootstrapTable data={posts} options={this.options} className="PostsTable" pagination>
-          <TableHeaderColumn dataField='id' isKey>Post Id</TableHeaderColumn>
-          <TableHeaderColumn dataField='timestamp' dataSort>Created Time</TableHeaderColumn>
-          <TableHeaderColumn dataField='title'>Title</TableHeaderColumn>
-          <TableHeaderColumn dataField='author'>Author</TableHeaderColumn>
-          <TableHeaderColumn dataField='category'>Category</TableHeaderColumn>
-          <TableHeaderColumn dataField='voteScore' dataSort>Votes</TableHeaderColumn>
-        </BootstrapTable>
+        <div className="container">
+          <div className='row'>
+            <div className='col-md-12'>
+              <PostList posts={posts_n} />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

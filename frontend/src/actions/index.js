@@ -18,8 +18,7 @@ export const receivePosts = (posts) => ({
   posts
 })
 
-export const fetchPosts = () => dispatch => (
-  ReadableAPI.getPosts().then(posts => {
-    dispatch(receivePosts(posts))
-  })
+export const fetchPosts = (category) => dispatch => (
+  category ? ReadableAPI.getPostsForCategory(category).then(posts => dispatch(receivePosts(posts)))
+           : ReadableAPI.getPosts().then(posts => dispatch(receivePosts(posts)))
 )

@@ -4,7 +4,7 @@ import '../App.css';
 import * as ReadableAPI from '../utils/ReadableAPI'
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
-import { addPost, fetchPosts } from '../actions'
+import { fetchCategories, addPost, fetchPosts } from '../actions'
 import Post from './Post'
 import PostList from './PostList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button,
@@ -18,10 +18,15 @@ class App extends Component {
     this.toggleFilter = this.toggleFilter.bind(this)
     this.toggleSort = this.toggleSort.bind(this)
     this.toggleAddPost  = this.toggleAddPost.bind(this)
+    this.onAddPost = this.onAddPost.bind(this)
+    this.selectFilter = this.selectFilter.bind(this)
+    this.selectSort = this.selectSort.bind(this)
     this.state = {
       filterDropdownOpen: false,
       sortDropdownOpen: false,
-      addPostModal: false
+      addPostModal: false,
+      selectedFilter: 'all',
+      selectedSort: 'vote'
     }
   }
 
@@ -38,9 +43,21 @@ class App extends Component {
     })
   }
 
+  selectFilter(event) {
+    this.setState({
+      selectedFilter: event ? event.target.innerText : ''
+    })
+  }
+
   toggleSort() {
     this.setState({
       sortDropdownOpen: !this.state.sortDropdownOpen
+    })
+  }
+
+  selectSort(event) {
+    this.setState({
+      selectedSort: event ? event.target.innerText.toLowerCase() : ''
     })
   }
 
@@ -51,16 +68,25 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { getPosts } = this.props
+    const { getPosts, getCategories } = this.props
     getPosts()
+    getCategories()
   }
 
   onPostSelect() {
 
   }
 
-  onAddPost() {
-
+  onAddPost(event, values) {
+    const post = {
+      ...values,
+      id: uuid(),
+      timestamp: Date.now(),
+      voteScore: 0
+    }
+    const { addPost } = this.props
+    addPost(post)
+    this.toggleAddPost()
   }
 
   testAPI() {
@@ -97,21 +123,13 @@ class App extends Component {
       body: 'a lalala fuck that bitch'
     }
 
-    ReadableAPI.deleteComment('e43023de-d54e-46ee-a1d3-88df549e0000').then(data => alert(JSON.stringify(data)))
+    ReadableAPI.addPost(post).then(data => alert(JSON.stringify(data)))
   }
 
   render() {
     console.log(this.props)
-    const { posts } = this.props
-    const posts_n = []
-
-    for (let i = 1; i <= 10; i++) {
-      posts.forEach( p => {
-        const copy = Object.assign({}, p)
-        copy.id = uuid()
-        posts_n.push(copy)
-      } )
-    }
+    const { posts, categories } = this.props
+    posts.sort( (p1, p2) => (this.state.selectedSort === 'vote' ? p2.voteScore - p1.voteScore : p2.timestamp - p1.timestamp) )
 
     return (
       <div className="App">
@@ -120,6 +138,8 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to Readable!</h2>
         </div>
+
+        <Button onClick={this.testAPI}>Test API</Button>
 
         <div className='container'>
           <div className='row'>
@@ -132,8 +152,8 @@ class App extends Component {
                   Sort
                 </DropdownToggle>
                 <DropdownMenu>
-                  <DropdownItem>Date</DropdownItem>
-                  <DropdownItem>Vote</DropdownItem>
+                  <DropdownItem onClick={this.selectSort}>Date</DropdownItem>
+                  <DropdownItem onClick={this.selectSort}>Vote</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
@@ -143,9 +163,9 @@ class App extends Component {
                   Category
                 </DropdownToggle>
                 <DropdownMenu>
-                  <DropdownItem>Category1</DropdownItem>
-                  <DropdownItem>Category2</DropdownItem>
-                  <DropdownItem>Category3</DropdownItem>
+                  <DropdownItem onClick={this.selectFilter}>all</DropdownItem>
+                  {categories.map((category) =>
+                    (<DropdownItem key={category.path} onClick={this.selectFilter}>{category.name}</DropdownItem>))}
                 </DropdownMenu>
               </Dropdown>
             </div>
@@ -155,14 +175,16 @@ class App extends Component {
         <div className="container">
           <div className='row'>
             <div className='col-md-12'>
-              <PostList posts={posts_n} />
+              <PostList posts={this.state.selectedFilter === 'all' ? posts :
+                posts.filter(post => post.category === this.state.selectedFilter)
+              } onSelect={this.onPostSelect} />
             </div>
           </div>
         </div>
 
         <Modal isOpen={this.state.addPostModal} toggle={this.toggleAddPost}>
           <ModalHeader toggle={this.toggleAddPost}>Add a new post</ModalHeader>
-          <ModalBody><AddOrEditPostForm defaultValues={this.defaultValues}/></ModalBody>
+          <ModalBody><AddOrEditPostForm categories={categories} onSubmit={this.onAddPost} /></ModalBody>
         </Modal>
 
       </div>
@@ -170,15 +192,18 @@ class App extends Component {
   }
 }
 
-function mapStateToProps({posts}) {
+function mapStateToProps({posts, categories}) {
   return {
-    posts
+    posts,
+    categories
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getPosts: () => fetchPosts()(dispatch)
+    getCategories: () => fetchCategories()(dispatch),
+    getPosts: () => fetchPosts()(dispatch),
+    addPost: (post) => addPost(post)(dispatch)
   }
 }
 

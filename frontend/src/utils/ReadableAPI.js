@@ -18,7 +18,7 @@ export const getPosts = () =>
   fetch(`${api}/posts`, { headers })
     .then(res => res.json())
 
-export const addPost = (post) => {
+export const addPost = (post) =>
   fetch(`${api}/posts`, {
     method: 'POST',
     headers: {
@@ -26,8 +26,7 @@ export const addPost = (post) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify( post )
-  }).then(res => res.json())
-}
+  }).then(res => res.json)
 
 export const getPost = (id) =>
   fetch(`${api}/posts/${id}`, { headers })
@@ -107,4 +106,4 @@ export const deleteComment = (id) =>
       ...headers,
       'Content-Type': 'application/json'
     }
-  }).then(res => res.json())  
+  }).then(res => res.json())

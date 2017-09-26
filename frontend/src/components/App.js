@@ -10,6 +10,9 @@ import PostList from './PostList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button,
 Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import AddOrEditPostForm from './AddOrEditPostForm'
+import { Route } from 'react-router-dom'
+import PostDetailView from './PostDetailView'
+import { Link } from 'react-router-dom'
 
 class App extends Component {
   constructor(props) {
@@ -132,60 +135,66 @@ class App extends Component {
     posts.sort( (p1, p2) => (this.state.selectedSort === 'vote' ? p2.voteScore - p1.voteScore : p2.timestamp - p1.timestamp) )
 
     return (
-      <div className="App">
+      <div className="main">
 
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to Readable!</h2>
-        </div>
+        <Route path="/" exact render={() => (
+          <div className="App">
+            <div className="App-header">
+              <img src={logo} className="App-logo" alt="logo" />
+              <h2>Welcome to Readable!</h2>
+            </div>
 
-        <Button onClick={this.testAPI}>Test API</Button>
+            <Button onClick={this.testAPI}>Test API</Button>
 
-        <div className='container'>
-          <div className='row'>
-            <div className='col-md-10 align-self-start'>
-              <Button outline color='primary' className='Action' onClick={this.toggleAddPost}>Add post</Button>
+            <div className='container'>
+              <div className='row'>
+                <div className='col-md-10 align-self-start'>
+                  <Button outline color='primary' className='Action' onClick={this.toggleAddPost}>Add post</Button>
+                </div>
+                <div className='col-md-1 align-self-end'>
+                  <Dropdown className='Sort' tether isOpen={this.state.sortDropdownOpen} toggle={this.toggleSort}>
+                    <DropdownToggle caret>
+                      Sort
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem onClick={this.selectSort}>Date</DropdownItem>
+                      <DropdownItem onClick={this.selectSort}>Vote</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+                <div className='col-md-1 align-self-end'>
+                  <Dropdown className='Filter' tether isOpen={this.state.filterDropdownOpen} toggle={this.toggleFilter}>
+                    <DropdownToggle caret>
+                      Category
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem onClick={this.selectFilter}>all</DropdownItem>
+                      {categories.map((category) =>
+                        (<DropdownItem key={category.path} onClick={this.selectFilter}>{category.name}</DropdownItem>))}
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+              </div>
             </div>
-            <div className='col-md-1 align-self-end'>
-              <Dropdown className='Sort' tether isOpen={this.state.sortDropdownOpen} toggle={this.toggleSort}>
-                <DropdownToggle caret>
-                  Sort
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem onClick={this.selectSort}>Date</DropdownItem>
-                  <DropdownItem onClick={this.selectSort}>Vote</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+
+            <div className="container">
+              <div className='row'>
+                <div className='col-md-12'>
+                  <PostList posts={this.state.selectedFilter === 'all' ? posts :
+                    posts.filter(post => post.category === this.state.selectedFilter)
+                  } onSelect={this.onPostSelect} />
+                </div>
+              </div>
             </div>
-            <div className='col-md-1 align-self-end'>
-              <Dropdown className='Filter' tether isOpen={this.state.filterDropdownOpen} toggle={this.toggleFilter}>
-                <DropdownToggle caret>
-                  Category
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem onClick={this.selectFilter}>all</DropdownItem>
-                  {categories.map((category) =>
-                    (<DropdownItem key={category.path} onClick={this.selectFilter}>{category.name}</DropdownItem>))}
-                </DropdownMenu>
-              </Dropdown>
-            </div>
+
+            <Modal isOpen={this.state.addPostModal} toggle={this.toggleAddPost}>
+              <ModalHeader toggle={this.toggleAddPost}>Add a new post</ModalHeader>
+              <ModalBody><AddOrEditPostForm categories={categories} onSubmit={this.onAddPost} /></ModalBody>
+            </Modal>
           </div>
-        </div>
+        )} />
 
-        <div className="container">
-          <div className='row'>
-            <div className='col-md-12'>
-              <PostList posts={this.state.selectedFilter === 'all' ? posts :
-                posts.filter(post => post.category === this.state.selectedFilter)
-              } onSelect={this.onPostSelect} />
-            </div>
-          </div>
-        </div>
-
-        <Modal isOpen={this.state.addPostModal} toggle={this.toggleAddPost}>
-          <ModalHeader toggle={this.toggleAddPost}>Add a new post</ModalHeader>
-          <ModalBody><AddOrEditPostForm categories={categories} onSubmit={this.onAddPost} /></ModalBody>
-        </Modal>
+        <Route path="/post" render={() => (<PostDetailView />)} />
 
       </div>
     )
@@ -207,4 +216,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App)

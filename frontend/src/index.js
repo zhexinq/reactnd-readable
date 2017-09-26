@@ -8,6 +8,7 @@ import { Provider } from 'react-redux'
 import rootReducer from './reducers'
 import thunk from 'redux-thunk'
 import 'bootstrap/dist/css/bootstrap.css'
+import { BrowserRouter } from 'react-router-dom'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -16,5 +17,8 @@ const store = createStore(
   composeEnhancers( applyMiddleware(thunk) )
 )
 
-ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}>
+                  <BrowserRouter><App /></BrowserRouter>
+                </Provider>,
+                document.getElementById('root'));
 registerServiceWorker();

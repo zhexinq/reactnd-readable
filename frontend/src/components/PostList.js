@@ -10,7 +10,7 @@ export default function PostList({ posts, onSelect }) {
     <ul className='PostList'>
       {posts.map((post) => (
         <li onClick={() => onSelect(post)} key={post.id}>
-          <Post post={post} showDetail={false} />
+          <Post post={post} />
         </li>
       ))
       }

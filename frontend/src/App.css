@@ -61,3 +61,7 @@
   float: right;
   margin: 20px auto;
 }
+
+p, h1, h2, h3 {
+  word-wrap: break-word;
+}

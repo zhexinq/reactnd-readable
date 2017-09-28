@@ -13,6 +13,7 @@ import AddOrEditPostForm from './AddOrEditPostForm'
 import { Route } from 'react-router-dom'
 import PostDetailView from './PostDetailView'
 import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router'
 
 class App extends Component {
   constructor(props) {
@@ -216,4 +217,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

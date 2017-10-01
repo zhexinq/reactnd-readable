@@ -7,10 +7,10 @@ export default function AddOrEditPostForm({ defaultValues, categories, onSubmit,
   return (
     <AvForm onValidSubmit={onSubmit} model={defaultValues}>
       <AvField name="title" label="Title" placeholder="Enter a title for the post." required />
-      <AvField name="author" label="Author" placeholder="Enter your name." required />
-      <AvField name="category" type="select" label="Category" helpMessage="Select a category for the post topic." value={categories[0].name} required>
+      {!edit && <AvField name="author" label="Author" placeholder="Enter your name." required />}
+      {!edit && <AvField name="category" type="select" label="Category" helpMessage="Select a category for the post topic." value={categories[0].name} required>
         {categories.map(category => (<option key={category.path}>{category.name}</option>))}
-      </AvField>
+      </AvField>}
       <Label>Body</Label>
       <AvInput name="body" label="Body" type="textarea" placeholder="You can say anything here :)" required />
       <FormGroup className='formSubmit'>

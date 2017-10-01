@@ -5,8 +5,10 @@ export const ADD_POST = 'ADD_POST'
 export const GET_POSTS = 'GET_POSTS'
 export const GET_POST = 'GET_POST'
 export const VOTE_POST = 'VOTE_POST'
+export const EDIT_POST = 'EDIT_POST'
 export const GET_COMMENTS = 'GET_COMMENTS'
 export const VOTE_COMMENT = 'VOTE_COMMENT'
+export const EDIT_COMMENT = 'EDIT_COMMENT'
 
 /* category */
 export const receiveCategories = (categories) => ({
@@ -56,6 +58,15 @@ export const fetchVotePost = (id, voteOption) => dispatch => (
   ReadableAPI.votePost(id, voteOption).then(votedPost => dispatch(receiveVotedPost(votedPost)))
 )
 
+export const receiveEditPost = (post) => ({
+  type: EDIT_POST,
+  post
+})
+
+export const fetchEditPost = (id, edit) => dispatch => (
+  ReadableAPI.editPost(id, edit).then(editedPost => dispatch(receiveEditPost(editedPost)))
+)
+
 /* comment actions */
 export const receiveComments = (comments) => ({
     type: GET_COMMENTS,
@@ -73,4 +84,13 @@ export const receiveVotedComment = (comment) => ({
 
 export const fetchVoteComment = (id, voteOption) => dispatch => (
   ReadableAPI.voteComment(id, voteOption).then(votedComment => dispatch(receiveVotedComment(votedComment)))
+)
+
+export const receiveEditComment = (comment) => ({
+  type: EDIT_COMMENT,
+  comment
+})
+
+export const fetchEditComment = (id, edit) => dispatch => (
+  ReadableAPI.editComment(id, edit).then(editedComment => dispatch(receiveEditComment(editedComment)))
 )

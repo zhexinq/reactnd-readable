@@ -6,6 +6,7 @@ export default function AddOrEditPostForm({ defaultValues, categories, onSubmit,
 
   return (
     <AvForm onValidSubmit={onSubmit} model={defaultValues}>
+      <AvField name="id" style={{'display': 'none'}} />
       <AvField name="title" label="Title" placeholder="Enter a title for the post." required />
       {!edit && <AvField name="author" label="Author" placeholder="Enter your name." required />}
       {!edit && <AvField name="category" type="select" label="Category" helpMessage="Select a category for the post topic." value={categories[0].name} required>

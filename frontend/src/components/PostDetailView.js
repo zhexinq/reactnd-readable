@@ -4,7 +4,7 @@ import { Jumbotron, Button, CardLink, CardBlock, Modal, ModalHeader, ModalBody, 
 import { AvForm, AvField, AvInput } from 'availity-reactstrap-validation';
 import VoteBox from './VoteBox'
 import { withRouter } from 'react-router'
-import { fetchPost, fetchComments } from '../actions'
+import { fetchPost, fetchComments, fetchEditPost } from '../actions'
 import Comment from './Comment'
 import AddOrEditPostForm from './AddOrEditPostForm'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
@@ -29,8 +29,14 @@ class PostDetailView extends Component {
     })
   }
 
-  onEditPostSubmit() {
-
+  onEditPostSubmit(event, values) {
+    const { editPost } = this.props
+    const { id, title, body } = values
+    editPost(id, {
+      title: title,
+      body: body
+    })
+    this.toggleEditPost()
   }
 
   toggleAddComment() {
@@ -72,6 +78,7 @@ class PostDetailView extends Component {
     const { posts, location, comments } = this.props
     const post = posts.find(p => p.id == this.getPostId(location.search))
     const defaultPostValues = {
+      id: post ? post.id : '',
       title: post ? post.title : '',
       body: post ? post.body : ''
     }
@@ -91,7 +98,7 @@ class PostDetailView extends Component {
         </Jumbotron>
 
         <div className="container">
-          {comments && comments.map(comment => (<Comment key={comment.id} comment={comment} toDate={this.toDate} />))}
+          {comments && comments.map(comment => comment && (<Comment key={comment.id} comment={comment} toDate={this.toDate} />))}
           {(!comments || comments.length === 0) && <p>No one leaves a comment yet.</p>}
         </div>
 
@@ -125,7 +132,8 @@ function mapStateToProps({ posts, comments }) {
 function mapDispatchToProps(dispatch) {
   return {
     getPost: (id) => fetchPost(id)(dispatch),
-    getComments: (id) => fetchComments(id)(dispatch)
+    getComments: (id) => fetchComments(id)(dispatch),
+    editPost: (id, edit) => fetchEditPost(id, edit)(dispatch)
   }
 }
 

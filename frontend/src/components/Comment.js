@@ -3,6 +3,8 @@ import VoteBox from './VoteBox'
 import { Button } from 'reactstrap'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
+import { fetchEditComment } from '../actions'
+import { connect } from 'react-redux'
 
 class Comment extends Component {
   constructor(props) {
@@ -21,8 +23,16 @@ class Comment extends Component {
     })
   }
 
-  onEditCommentSubmit() {
-
+  onEditCommentSubmit(event, values) {
+    const { editComment } = this.props
+    const { id, body } = values
+    const comment = {
+      id,
+      body,
+      timestamp: Date.now()
+    }
+    editComment(id, comment)
+    this.toggleEditComment()
   }
 
   render() {
@@ -42,6 +52,9 @@ class Comment extends Component {
 
     const { comment, toDate } = this.props
     const defaultCommentValues = {
+      id: comment.id,
+      parentId: comment.parentId,
+      author: comment.author,
       body: comment.body
     }
 
@@ -77,4 +90,17 @@ class Comment extends Component {
   }
 }
 
-export default Comment
+function mapStateToProps() {
+  return {
+
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    editComment: (id, edit) => fetchEditComment(id, edit)(dispatch)
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Comment)

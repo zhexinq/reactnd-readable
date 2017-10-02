@@ -1,4 +1,4 @@
-import { ADD_POST, GET_POSTS, GET_CATEGORIES, VOTE_POST, EDIT_POST, GET_POST, GET_COMMENTS, VOTE_COMMENT, EDIT_COMMENT, ADD_COMMENT } from '../actions'
+import { ADD_POST, GET_POSTS, GET_CATEGORIES, VOTE_POST, EDIT_POST, GET_POST, GET_COMMENTS, VOTE_COMMENT, EDIT_COMMENT, ADD_COMMENT, DELETE_COMMENT, DELETE_POST } from '../actions'
 import { combineReducers } from 'redux'
 
 function posts (state = [], action) {
@@ -17,6 +17,13 @@ function posts (state = [], action) {
       return state.map(post => post.id === action.post.id ? action.post : post)
     case EDIT_POST:
       return state.map(p => p.id === action.post.id ? action.post : p)
+    case DELETE_POST:
+      return state.reduce((result, post) => {
+        if (post.id !== action.post.id) {
+          result.push(post)
+        }
+        return result
+      }, [])
     default:
       return state
   }
@@ -44,6 +51,13 @@ function comments (state = [], action) {
     case ADD_COMMENT:
       comments.push(action.comment)
       return comments
+    case DELETE_COMMENT:
+      return state.reduce((result, comment) => {
+        if (comment.id !== action.comment.id) {
+          result.push(comment)
+        }
+        return result
+      }, [])
     default:
       return state
   }

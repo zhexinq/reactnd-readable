@@ -10,6 +10,8 @@ export const GET_COMMENTS = 'GET_COMMENTS'
 export const VOTE_COMMENT = 'VOTE_COMMENT'
 export const EDIT_COMMENT = 'EDIT_COMMENT'
 export const ADD_COMMENT = 'ADD_COMMENT'
+export const DELETE_COMMENT = 'DELETE_COMMENT'
+export const DELETE_POST = 'DELETE_POST'
 
 /* category */
 export const receiveCategories = (categories) => ({
@@ -68,6 +70,15 @@ export const fetchEditPost = (id, edit) => dispatch => (
   ReadableAPI.editPost(id, edit).then(editedPost => dispatch(receiveEditPost(editedPost)))
 )
 
+export const receiveDeletePost = (post) => ({
+  type: DELETE_POST,
+  post
+})
+
+export const fetchDeletePost = (id) => dispatch => (
+  ReadableAPI.deletePost(id).then(deletedPost => dispatch(receiveDeletePost(deletedPost)))
+)
+
 /* comment actions */
 export const receiveComments = (comments) => ({
     type: GET_COMMENTS,
@@ -103,4 +114,13 @@ export const receiveAddComment = (comment) => ({
 
 export const fetchAddComment = (comment) => dispatch => (
   ReadableAPI.addComment(comment).then(addedComment => dispatch(receiveAddComment(addedComment)))
+)
+
+export const receiveDeleteComent = (comment) => ({
+  type: DELETE_COMMENT,
+  comment
+})
+
+export const fetchDeleteComment = (id) => dispatch => (
+  ReadableAPI.deleteComment(id).then(deletedComment => dispatch(receiveDeleteComent(deletedComment)))
 )

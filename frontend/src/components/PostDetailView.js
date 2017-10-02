@@ -4,11 +4,13 @@ import { Jumbotron, Button, CardLink, CardBlock, Modal, ModalHeader, ModalBody, 
 import { AvForm, AvField, AvInput } from 'availity-reactstrap-validation';
 import VoteBox from './VoteBox'
 import { withRouter } from 'react-router'
-import { fetchPost, fetchComments, fetchEditPost, fetchAddComment } from '../actions'
+import { fetchPost, fetchComments, fetchEditPost, fetchAddComment, fetchDeletePost } from '../actions'
 import Comment from './Comment'
 import AddOrEditPostForm from './AddOrEditPostForm'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
 import uuid from 'uuid/v4'
+
+const REACT_SERVER = 'http://localhost:3000/'
 
 class PostDetailView extends Component {
   constructor(props) {
@@ -16,6 +18,7 @@ class PostDetailView extends Component {
 
     this.toggleEditPost = this.toggleEditPost.bind(this)
     this.onEditPostSubmit = this.onEditPostSubmit.bind(this)
+    this.onDeletePost = this.onDeletePost.bind(this)
     this.toggleAddComment = this.toggleAddComment.bind(this)
     this.onAddCommentSubmit = this.onAddCommentSubmit.bind(this)
     this.state = {
@@ -38,6 +41,13 @@ class PostDetailView extends Component {
       body: body
     })
     this.toggleEditPost()
+  }
+
+  onDeletePost(event) {
+    const post = JSON.parse(event.target.value)
+    const { deletePost } = this.props
+    deletePost(post.id)
+    window.location.assign(REACT_SERVER)
   }
 
   toggleAddComment() {
@@ -95,7 +105,7 @@ class PostDetailView extends Component {
       parentId: post ? post.id : ''
     }
 
-    return (
+    return ( post ?
       <div className="container" style={postStyle}>
         <Jumbotron>
           <h1 className="display-3">{post && post.title}</h1>
@@ -104,14 +114,14 @@ class PostDetailView extends Component {
           <p className="lead">{post && post.body}</p>
           <hr className="my-2" />
           <Button color="primary" style={buttonStyle} onClick={this.toggleEditPost}>Edit</Button>
-          <Button color="secondary" style={buttonStyle}>Delete</Button>
+          <Button color="secondary" style={buttonStyle} onClick={this.onDeletePost} value={JSON.stringify(post)}>Delete</Button>
           <Button color="secondary" style={buttonStyle} onClick={this.toggleAddComment}>Comment</Button>
           <VoteBox post={post} />
         </Jumbotron>
 
         <div className="container">
-          {comments && comments.map(comment => comment && (<Comment key={comment.id} comment={comment} toDate={this.toDate} />))}
-          {(!comments || comments.length === 0) && <p>No one leaves a comment yet.</p>}
+          {comments && comments.map(comment => comment && !comment.parentDeleted && (<Comment key={comment.id} comment={comment} toDate={this.toDate} />))}
+          {(!comments || comments.length === 0) && post && <p>No one leaves a comment yet.</p>}
         </div>
 
         <Modal isOpen={this.state.editPostModalOpen} toggle={this.toggleEditPost}>
@@ -128,7 +138,8 @@ class PostDetailView extends Component {
           </ModalBody>
         </Modal>
 
-      </div>
+      </div> :
+      <div>The post doesn't exist</div>
     )
 
   }
@@ -146,6 +157,7 @@ function mapDispatchToProps(dispatch) {
     getPost: (id) => fetchPost(id)(dispatch),
     getComments: (id) => fetchComments(id)(dispatch),
     editPost: (id, edit) => fetchEditPost(id, edit)(dispatch),
+    deletePost: (id) => fetchDeletePost(id)(dispatch),
     addComment: (comment) => fetchAddComment(comment)(dispatch)
   }
 }

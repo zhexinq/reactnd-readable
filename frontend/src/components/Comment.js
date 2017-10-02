@@ -3,7 +3,7 @@ import VoteBox from './VoteBox'
 import { Button } from 'reactstrap'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
-import { fetchEditComment } from '../actions'
+import { fetchEditComment, fetchDeleteComment } from '../actions'
 import { connect } from 'react-redux'
 
 class Comment extends Component {
@@ -12,6 +12,7 @@ class Comment extends Component {
 
     this.toggleEditComment = this.toggleEditComment.bind(this)
     this.onEditCommentSubmit = this.onEditCommentSubmit.bind(this)
+    this.onDeleteComment = this.onDeleteComment.bind(this)
     this.state = {
       editCommentModalOpen: false
     }
@@ -33,6 +34,11 @@ class Comment extends Component {
     }
     editComment(id, comment)
     this.toggleEditComment()
+  }
+
+  onDeleteComment() {
+    const { comment, deleteComment } = this.props
+    deleteComment(comment.id)
   }
 
   render() {
@@ -74,7 +80,7 @@ class Comment extends Component {
             <div className="comment-description">
                 <p>{comment.body}</p>
                   <Button color="primary" style={buttonStyle} onClick={this.toggleEditComment}>Edit</Button>
-                  <Button color="secondary" style={buttonStyle}>Delete</Button>
+                  <Button color="secondary" style={buttonStyle} onClick={this.onDeleteComment}>Delete</Button>
                 <VoteBox comment={comment}/>
             </div>
           </div>
@@ -98,7 +104,8 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    editComment: (id, edit) => fetchEditComment(id, edit)(dispatch)
+    editComment: (id, edit) => fetchEditComment(id, edit)(dispatch),
+    deleteComment: (id) => fetchDeleteComment(id)(dispatch)
   }
 }
 

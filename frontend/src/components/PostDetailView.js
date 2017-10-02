@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Jumbotron, Button, CardLink, CardBlock, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { AvForm, AvField, AvInput } from 'availity-reactstrap-validation';
+import { Jumbotron, Button, Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import VoteBox from './VoteBox'
 import { withRouter } from 'react-router'
 import { fetchPost, fetchComments, fetchEditPost, fetchAddComment, fetchDeletePost } from '../actions'
@@ -95,7 +94,7 @@ class PostDetailView extends Component {
     }
 
     const { posts, location, comments } = this.props
-    const post = posts.find(p => p.id == this.getPostId(location.search))
+    const post = posts.find(p => p.id === this.getPostId(location.search))
     const defaultPostValues = {
       id: post ? post.id : '',
       title: post ? post.title : '',
@@ -109,7 +108,7 @@ class PostDetailView extends Component {
       <div className="container" style={postStyle}>
         <Jumbotron>
           <h1 className="display-3">{post && post.title}</h1>
-          <p className="lead">{post && post.author}, {post && this.toDate(post.timestamp)}</p>
+          <p className="lead">{post && post.author}, {post && this.toDate(post.timestamp)}</p><Badge>{comments.length} comments</Badge>
           <hr className="my-2" />
           <p className="lead">{post && post.body}</p>
           <hr className="my-2" />

@@ -32,8 +32,8 @@ class VoteBox extends Component {
 
     return (
       <CardBlock style={voteBoxStyle}>
-        <CardLink href="#"><img src={like} className='voteButton' onClick={this.likePost} /></CardLink>
-        <CardLink href="#"><img src={dislike} className='voteButton' onClick={this.dislikePost} /></CardLink>
+        <CardLink href="#"><img src={like} className='voteButton' onClick={this.likePost} alt='like button' /></CardLink>
+        <CardLink href="#"><img src={dislike} className='voteButton' onClick={this.dislikePost} alt='dislike button' /></CardLink>
         <CardLink href="#" className='voteCount'>{post && post.voteScore || comment && comment.voteScore}</CardLink>
       </CardBlock>
     )

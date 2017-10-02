@@ -68,7 +68,7 @@ class Comment extends Component {
       <div className="row" style={commentStyle}>
           <div className="col-sm-12">
             <div>
-                <img src="http://bootdey.com/img/Content/user_1.jpg" style={avatarStyle} alt="user profile image" />
+                <img src="http://bootdey.com/img/Content/user_1.jpg" style={avatarStyle} alt="user profile" />
                 <div>
                     <div className="title h5">
                         <a href="#"><b>{comment.author} </b></a>

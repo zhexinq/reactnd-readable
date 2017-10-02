@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { AvForm, AvField, AvInput } from 'availity-reactstrap-validation';
 import { Button, Label, FormGroup } from 'reactstrap';
 

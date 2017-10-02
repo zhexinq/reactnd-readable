@@ -1,18 +1,15 @@
 import React, { Component } from 'react'
 import logo from '../anonymous-logo.svg'
 import '../App.css';
-import * as ReadableAPI from '../utils/ReadableAPI'
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
 import { fetchCategories, addPost, fetchPosts } from '../actions'
-import Post from './Post'
 import PostList from './PostList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button,
-Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+Modal, ModalHeader, ModalBody } from 'reactstrap'
 import AddOrEditPostForm from './AddOrEditPostForm'
 import { Route } from 'react-router-dom'
 import PostDetailView from './PostDetailView'
-import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 
 class App extends Component {
@@ -32,13 +29,6 @@ class App extends Component {
       selectedFilter: 'all',
       selectedSort: 'vote'
     }
-  }
-
-  defaultValues = {
-    title: 'defaultTitle',
-    author: 'defaultAuthor',
-    category: 'defaultCategory',
-    body: 'defaultBody'
   }
 
   toggleFilter() {
@@ -77,10 +67,6 @@ class App extends Component {
     getCategories()
   }
 
-  onPostSelect() {
-
-  }
-
   onAddPost(event, values) {
     const post = {
       ...values,
@@ -93,45 +79,7 @@ class App extends Component {
     this.toggleAddPost()
   }
 
-  testAPI() {
-    const post = {
-      "id": uuid(),
-      "timestamp": 1467166872634,
-      "title": "post title",
-      "body": "test whether works",
-      "author": "zhexin",
-      "category": "react",
-      "voteScore": 0,
-      "deleted": false
-    }
-
-    const option = {
-      option: 'upVote'
-    }
-
-    const edit = {
-      title: 'change to different title',
-      body: 'this is a different body.'
-    }
-
-    const comment = {
-      id: uuid(),
-      timestamp: new Date(),
-      body: 'test comment :L',
-      author: 'zhexin',
-      parentId: '8xf0y6ziyjabvozdd253nd'
-    }
-
-    const commentEdit = {
-      timestamp: new Date(),
-      body: 'a lalala fuck that bitch'
-    }
-
-    ReadableAPI.addPost(post).then(data => alert(JSON.stringify(data)))
-  }
-
   render() {
-    console.log(this.props)
     const { posts, categories } = this.props
     posts.sort( (p1, p2) => (this.state.selectedSort === 'vote' ? p2.voteScore - p1.voteScore : p2.timestamp - p1.timestamp) )
 
@@ -144,8 +92,6 @@ class App extends Component {
               <img src={logo} className="App-logo" alt="logo" />
               <h2>Welcome to Readable!</h2>
             </div>
-
-            <Button onClick={this.testAPI}>Test API</Button>
 
             <div className='container'>
               <div className='row'>
@@ -183,7 +129,7 @@ class App extends Component {
                 <div className='col-md-12'>
                   <PostList posts={this.state.selectedFilter === 'all' ? posts :
                     posts.filter(post => post.category === this.state.selectedFilter)
-                  } onSelect={this.onPostSelect} />
+                  } />
                 </div>
               </div>
             </div>

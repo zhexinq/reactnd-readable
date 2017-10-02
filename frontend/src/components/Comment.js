@@ -80,7 +80,7 @@ class Comment extends Component {
           </div>
 
           <Modal isOpen={this.state.editCommentModalOpen} toggle={this.toggleEditComment}>
-            <ModalHeader toggle={this.toggleEditComment}>Leave a comment</ModalHeader>
+            <ModalHeader toggle={this.toggleEditComment}>Edit comment</ModalHeader>
             <ModalBody>
               <AddOrEditCommentForm defaultValues={defaultCommentValues} onSubmit={this.onEditCommentSubmit} edit/>
             </ModalBody>

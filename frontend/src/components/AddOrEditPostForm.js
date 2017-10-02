@@ -13,7 +13,7 @@ export default function AddOrEditPostForm({ defaultValues, categories, onSubmit,
         {categories.map(category => (<option key={category.path}>{category.name}</option>))}
       </AvField>}
       <Label>Body</Label>
-      <AvInput name="body" label="Body" type="textarea" placeholder="You can say anything here :)" required />
+      <AvInput name="body" label="Body" type="textarea" placeholder="You can say anything here :)" />
       <FormGroup className='formSubmit'>
         <Button color='primary'>{ edit ? 'Edit' : 'Add' }</Button>
       </FormGroup>

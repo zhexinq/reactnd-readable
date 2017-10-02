@@ -9,6 +9,7 @@ export const EDIT_POST = 'EDIT_POST'
 export const GET_COMMENTS = 'GET_COMMENTS'
 export const VOTE_COMMENT = 'VOTE_COMMENT'
 export const EDIT_COMMENT = 'EDIT_COMMENT'
+export const ADD_COMMENT = 'ADD_COMMENT'
 
 /* category */
 export const receiveCategories = (categories) => ({
@@ -93,4 +94,13 @@ export const receiveEditComment = (comment) => ({
 
 export const fetchEditComment = (id, edit) => dispatch => (
   ReadableAPI.editComment(id, edit).then(editedComment => dispatch(receiveEditComment(editedComment)))
+)
+
+export const receiveAddComment = (comment) => ({
+  type: ADD_COMMENT,
+  comment
+})
+
+export const fetchAddComment = (comment) => dispatch => (
+  ReadableAPI.addComment(comment).then(addedComment => dispatch(receiveAddComment(addedComment)))
 )

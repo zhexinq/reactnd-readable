@@ -1,4 +1,4 @@
-import { ADD_POST, GET_POSTS, GET_CATEGORIES, VOTE_POST, EDIT_POST, GET_POST, GET_COMMENTS, VOTE_COMMENT, EDIT_COMMENT } from '../actions'
+import { ADD_POST, GET_POSTS, GET_CATEGORIES, VOTE_POST, EDIT_POST, GET_POST, GET_COMMENTS, VOTE_COMMENT, EDIT_COMMENT, ADD_COMMENT } from '../actions'
 import { combineReducers } from 'redux'
 
 function posts (state = [], action) {
@@ -32,6 +32,8 @@ function categories (state = [], action) {
 }
 
 function comments (state = [], action) {
+  const comments = Object.assign([], state)
+
   switch (action.type) {
     case GET_COMMENTS:
       return action.comments
@@ -39,6 +41,9 @@ function comments (state = [], action) {
       return state.map(comment => comment.id === action.comment.id ? action.comment : comment)
     case EDIT_COMMENT:
       return state.map(comment => comment.id === action.comment.id ? action.comment : comment)
+    case ADD_COMMENT:
+      comments.push(action.comment)
+      return comments
     default:
       return state
   }

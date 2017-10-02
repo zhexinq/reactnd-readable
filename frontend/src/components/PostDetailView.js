@@ -4,10 +4,11 @@ import { Jumbotron, Button, CardLink, CardBlock, Modal, ModalHeader, ModalBody, 
 import { AvForm, AvField, AvInput } from 'availity-reactstrap-validation';
 import VoteBox from './VoteBox'
 import { withRouter } from 'react-router'
-import { fetchPost, fetchComments, fetchEditPost } from '../actions'
+import { fetchPost, fetchComments, fetchEditPost, fetchAddComment } from '../actions'
 import Comment from './Comment'
 import AddOrEditPostForm from './AddOrEditPostForm'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
+import uuid from 'uuid/v4'
 
 class PostDetailView extends Component {
   constructor(props) {
@@ -45,8 +46,16 @@ class PostDetailView extends Component {
     })
   }
 
-  onAddCommentSubmit() {
+  onAddCommentSubmit(event, values) {
+    const comment = {
+      ...values,
+      id: uuid(),
+      timestamp: Date.now()
+    }
 
+    const { addComment } = this.props
+    addComment(comment)
+    this.toggleAddComment()
   }
 
   getPostId(param) {
@@ -82,6 +91,9 @@ class PostDetailView extends Component {
       title: post ? post.title : '',
       body: post ? post.body : ''
     }
+    const defaultCommentValues = {
+      parentId: post ? post.id : ''
+    }
 
     return (
       <div className="container" style={postStyle}>
@@ -112,7 +124,7 @@ class PostDetailView extends Component {
         <Modal isOpen={this.state.addCommentModalOpen} toggle={this.toggleAddComment}>
           <ModalHeader toggle={this.toggleAddComment}>Leave a comment</ModalHeader>
           <ModalBody>
-            <AddOrEditCommentForm onSubmit={this.onAddCommentSubmit} />
+            <AddOrEditCommentForm onSubmit={this.onAddCommentSubmit} defaultValues={defaultCommentValues} />
           </ModalBody>
         </Modal>
 
@@ -133,7 +145,8 @@ function mapDispatchToProps(dispatch) {
   return {
     getPost: (id) => fetchPost(id)(dispatch),
     getComments: (id) => fetchComments(id)(dispatch),
-    editPost: (id, edit) => fetchEditPost(id, edit)(dispatch)
+    editPost: (id, edit) => fetchEditPost(id, edit)(dispatch),
+    addComment: (comment) => fetchAddComment(comment)(dispatch)
   }
 }
 

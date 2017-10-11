@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Card, CardText, CardBlock, CardTitle, CardSubtitle, Button, Modal, ModalHeader, ModalBody } from 'reactstrap'
+import { Card, CardText, CardBlock, CardTitle, CardSubtitle, Button, Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import VoteBox from './VoteBox'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { fetchEditPost, fetchDeletePost } from '../actions'
+import { fetchEditPost, fetchDeletePost, fetchComments } from '../actions'
 import { REACT_SERVER } from './PostDetailView'
 import AddOrEditPostForm from './AddOrEditPostForm'
 
@@ -49,8 +49,14 @@ class Post extends Component {
     window.location.assign(REACT_SERVER)
   }
 
+  componentDidMount() {
+    const { post, getComments } = this.props
+    getComments(post.id)
+  }
+
   render() {
-    const { post } = this.props
+    const { post, comments } = this.props
+    const myComments = comments.filter( c => c.parentId === post.id )
     const { id, title, author, timestamp, category } = post
     const date = new Date(timestamp).toLocaleString()
     const defaultPostValues = {
@@ -66,7 +72,7 @@ class Post extends Component {
             <CardTitle><Link to={{
               pathname: "/post",
               search: "?postId=" + id
-            }}>{this.trim(title)}</Link></CardTitle>
+            }}>{title ? this.trim(title) : ''}</Link></CardTitle>
             <CardSubtitle>{`${author}, ${date}`}</CardSubtitle>
           </CardBlock>
           <img width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=318%C3%97180&w=318&h=180" alt="Card cap" />
@@ -76,6 +82,9 @@ class Post extends Component {
             <Button color="danger" onClick={this.onDeletePost} value={JSON.stringify(post)}>Delete</Button>
           </CardBlock>
           <VoteBox post={post} />
+          <CardBlock style={{padding: 0, paddingBottom: '10px'}}>
+            <Badge>{myComments.length} comments</Badge>
+          </CardBlock>
         </Card>
 
         <Modal isOpen={this.state.editPostModalOpen} toggle={this.toggleEditPost}>
@@ -90,16 +99,18 @@ class Post extends Component {
 }
 
 
-function mapStateToProps({ posts }) {
+function mapStateToProps({ posts, comments }) {
   return {
-    posts
+    posts,
+    comments
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     editPost: (id, edit) => fetchEditPost(id, edit)(dispatch),
-    deletePost: (id) => fetchDeletePost(id)(dispatch)
+    deletePost: (id) => fetchDeletePost(id)(dispatch),
+    getComments: (id) => fetchComments(id)(dispatch)
   }
 }
 

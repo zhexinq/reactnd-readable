@@ -85,6 +85,7 @@ class App extends Component {
 
   render() {
     const { posts, categories } = this.props
+    console.log(this.props.location)
 
     const hiddenStyle = {
       display: 'none'

@@ -43,13 +43,7 @@ function comments (state = [], action) {
 
   switch (action.type) {
     case GET_COMMENTS:
-      action.comments.forEach( c => {
-        if ( comments.find( (_c) => (_c.id === c.id ) ) ) {
-          return
-        } 
-        comments.push(c)
-      })
-      return comments
+      return action.comments
     case VOTE_COMMENT:
       return state.map(comment => comment.id === action.comment.id ? action.comment : comment)
     case EDIT_COMMENT:

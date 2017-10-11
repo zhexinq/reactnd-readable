@@ -94,13 +94,13 @@ class App extends Component {
     return (
       <div className="main">
 
-        <div className="App">
-          <div className="App-header" style={this.props.location.search ? hiddenStyle : {}}>
+        <div className="App" style={this.props.location.search ? hiddenStyle : {} }>
+          <div className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
             <h2>Welcome to Readable!</h2>
           </div>
 
-          <div className='container' style={this.props.location.search ? hiddenStyle : {}}>
+          <div className='container'>
             <div className='row'>
               <div className='col-md-10 align-self-start'>
                 <Button outline color='primary' className='Action' onClick={this.toggleAddPost}>Add post</Button>

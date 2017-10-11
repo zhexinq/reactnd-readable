@@ -9,7 +9,7 @@ import AddOrEditPostForm from './AddOrEditPostForm'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
 import uuid from 'uuid/v4'
 
-const REACT_SERVER = 'http://localhost:3000/'
+export const REACT_SERVER = 'http://localhost:3000/'
 
 class PostDetailView extends Component {
   constructor(props) {
@@ -113,7 +113,7 @@ class PostDetailView extends Component {
           <p className="lead">{post && post.body}</p>
           <hr className="my-2" />
           <Button color="primary" style={buttonStyle} onClick={this.toggleEditPost}>Edit</Button>
-          <Button color="secondary" style={buttonStyle} onClick={this.onDeletePost} value={JSON.stringify(post)}>Delete</Button>
+          <Button color="danger" style={buttonStyle} onClick={this.onDeletePost} value={JSON.stringify(post)}>Delete</Button>
           <Button color="secondary" style={buttonStyle} onClick={this.toggleAddComment}>Comment</Button>
           <VoteBox post={post} />
         </Jumbotron>

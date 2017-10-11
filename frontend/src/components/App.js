@@ -8,9 +8,11 @@ import PostList from './PostList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button,
 Modal, ModalHeader, ModalBody } from 'reactstrap'
 import AddOrEditPostForm from './AddOrEditPostForm'
-import { Route } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import PostDetailView from './PostDetailView'
 import { withRouter } from 'react-router'
+import PostsMainView from './PostsMainView'
+import capitalize from 'capitalize'
 
 class App extends Component {
   constructor(props) {
@@ -26,8 +28,8 @@ class App extends Component {
       filterDropdownOpen: false,
       sortDropdownOpen: false,
       addPostModal: false,
-      selectedFilter: 'all',
-      selectedSort: 'vote'
+      selectedFilter: null,
+      selectedSort: null
     }
   }
 
@@ -79,67 +81,98 @@ class App extends Component {
     this.toggleAddPost()
   }
 
+
+
   render() {
     const { posts, categories } = this.props
-    posts.sort( (p1, p2) => (this.state.selectedSort === 'vote' ? p2.voteScore - p1.voteScore : p2.timestamp - p1.timestamp) )
+    console.log(this.props.location)
+
+    const hiddenStyle = {
+      display: 'none'
+    }
 
     return (
       <div className="main">
 
-        <Route path="/" exact render={() => (
-          <div className="App">
-            <div className="App-header">
-              <img src={logo} className="App-logo" alt="logo" />
-              <h2>Welcome to Readable!</h2>
-            </div>
-
-            <div className='container'>
-              <div className='row'>
-                <div className='col-md-10 align-self-start'>
-                  <Button outline color='primary' className='Action' onClick={this.toggleAddPost}>Add post</Button>
-                </div>
-                <div className='col-md-1 align-self-end'>
-                  <Dropdown className='Sort' tether isOpen={this.state.sortDropdownOpen} toggle={this.toggleSort}>
-                    <DropdownToggle caret>
-                      Sort
-                    </DropdownToggle>
-                    <DropdownMenu>
-                      <DropdownItem onClick={this.selectSort}>Date</DropdownItem>
-                      <DropdownItem onClick={this.selectSort}>Vote</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-                <div className='col-md-1 align-self-end'>
-                  <Dropdown className='Filter' tether isOpen={this.state.filterDropdownOpen} toggle={this.toggleFilter}>
-                    <DropdownToggle caret>
-                      Category
-                    </DropdownToggle>
-                    <DropdownMenu>
-                      <DropdownItem onClick={this.selectFilter}>all</DropdownItem>
-                      {categories.map((category) =>
-                        (<DropdownItem key={category.path} onClick={this.selectFilter}>{category.name}</DropdownItem>))}
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-              </div>
-            </div>
-
-            <div className="container">
-              <div className='row'>
-                <div className='col-md-12'>
-                  <PostList posts={this.state.selectedFilter === 'all' ? posts :
-                    posts.filter(post => post.category === this.state.selectedFilter)
-                  } />
-                </div>
-              </div>
-            </div>
-
-            <Modal isOpen={this.state.addPostModal} toggle={this.toggleAddPost}>
-              <ModalHeader toggle={this.toggleAddPost}>Add a new post</ModalHeader>
-              <ModalBody><AddOrEditPostForm categories={categories} onSubmit={this.onAddPost} /></ModalBody>
-            </Modal>
+        <div className="App">
+          <div className="App-header" style={this.props.location.search ? hiddenStyle : {}}>
+            <img src={logo} className="App-logo" alt="logo" />
+            <h2>Welcome to Readable!</h2>
           </div>
-        )} />
+
+          <div className='container' style={this.props.location.search ? hiddenStyle : {}}>
+            <div className='row'>
+              <div className='col-md-10 align-self-start'>
+                <Button outline color='primary' className='Action' onClick={this.toggleAddPost}>Add post</Button>
+              </div>
+              <div className='col-md-1 align-self-end'>
+                <Dropdown className='Sort' tether isOpen={this.state.sortDropdownOpen} toggle={this.toggleSort}>
+                  <DropdownToggle caret>
+                    {this.state.selectedSort ? capitalize(this.state.selectedSort) : 'Sort'}
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem onClick={this.selectSort} 
+                                  active={this.state.selectedSort === 'date'}>
+                                  Date
+                    </DropdownItem>
+                    <DropdownItem onClick={this.selectSort}
+                                  active={this.state.selectedSort === 'vote'}>
+                                  Vote
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+              <div className='col-md-1 align-self-end'>
+                <Dropdown className='Filter' tether isOpen={this.state.filterDropdownOpen} toggle={this.toggleFilter}>
+                  <DropdownToggle caret>
+                    {this.state.selectedFilter ? capitalize(this.state.selectedFilter) : 'Category'}
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <Link to='/'>
+                      <DropdownItem onClick={this.selectFilter}
+                                    active={this.state.selectedFilter === 'all'}>
+                        all
+                      </DropdownItem>
+                    </Link>
+                    {categories.map((category) =>
+                      (<Link to={`${category.name}`}
+                             key={`${category.path}`}>
+                        <DropdownItem 
+                          active={this.state.selectedFilter === category.name}
+                          onClick={this.selectFilter}>{category.name}
+                        </DropdownItem>
+                       </Link>))}
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+            </div>
+          </div>
+
+          <Route path='/' exact render={ () =>
+            <PostsMainView posts={posts} 
+                           sort={this.state.selectedSort}
+                           category='all'
+            />} 
+          />
+
+          {categories.map( category => 
+            (<Route
+              key={category.path} 
+              path={`/${category.name}`} 
+              exact
+              render={ () => (<PostsMainView 
+                                posts={posts} 
+                                sort={this.state.selectedSort}
+                                category={category.name} 
+                              />)}
+              />) )} 
+
+          <Modal isOpen={this.state.addPostModal} toggle={this.toggleAddPost}>
+            <ModalHeader toggle={this.toggleAddPost}>Add a new post</ModalHeader>
+            <ModalBody><AddOrEditPostForm categories={categories} onSubmit={this.onAddPost} /></ModalBody>
+          </Modal>
+        </div>
+
 
         <Route path="/post" render={() => (<PostDetailView />)} />
 

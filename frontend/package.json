@@ -5,6 +5,7 @@
   "dependencies": {
     "availity-reactstrap-validation": "^1.4.3",
     "bootstrap": "^4.0.0-alpha.6",
+    "capitalize": "^1.0.0",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.3",
     "react-bootstrap-table": "^4.0.3",

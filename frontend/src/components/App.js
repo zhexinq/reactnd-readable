@@ -4,11 +4,10 @@ import '../App.css';
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
 import { fetchCategories, addPost, fetchPosts } from '../actions'
-import PostList from './PostList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button,
-Modal, ModalHeader, ModalBody } from 'reactstrap'
+Modal, ModalHeader, ModalBody, Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
 import AddOrEditPostForm from './AddOrEditPostForm'
-import { Route, Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import PostDetailView from './PostDetailView'
 import { withRouter } from 'react-router'
 import PostsMainView from './PostsMainView'
@@ -18,14 +17,12 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    this.toggleFilter = this.toggleFilter.bind(this)
+    this.toggleNavBar = this.toggleNavBar.bind(this)
     this.toggleSort = this.toggleSort.bind(this)
     this.toggleAddPost  = this.toggleAddPost.bind(this)
     this.onAddPost = this.onAddPost.bind(this)
-    this.selectFilter = this.selectFilter.bind(this)
     this.selectSort = this.selectSort.bind(this)
     this.state = {
-      filterDropdownOpen: false,
       sortDropdownOpen: false,
       addPostModal: false,
       selectedFilter: null,
@@ -33,15 +30,9 @@ class App extends Component {
     }
   }
 
-  toggleFilter() {
+  toggleNavBar() {
     this.setState({
-      filterDropdownOpen: !this.state.filterDropdownOpen
-    })
-  }
-
-  selectFilter(event) {
-    this.setState({
-      selectedFilter: event ? event.target.innerText : ''
+      isNavBarOpen: !this.state.isNavBarOpen
     })
   }
 
@@ -84,15 +75,30 @@ class App extends Component {
 
 
   render() {
-    const { posts, categories } = this.props
-    console.log(this.props.location)
-
+    const { posts, categories, location } = this.props
     const hiddenStyle = {
       display: 'none'
     }
+    const pathname = location.pathname
 
     return (
       <div className="main">
+
+        <Navbar style={{ flexDirection: 'row' }} color="faded" light>
+          <NavbarBrand href="/">Readable</NavbarBrand>
+          <Nav style={{ flexDirection: 'row' }} className="ml-auto" navbar>
+            {categories.map(category => (
+              <NavItem key={category.path} >
+                <NavLink 
+                  href={`/${category.name}`}
+                  active={pathname.substring(1) === category.name}>
+                    {category.name}
+                </NavLink>
+              </NavItem>
+            ))}
+          </Nav>
+        </Navbar>          
+
 
         <div className="App" style={this.props.location.search ? hiddenStyle : {} }>
           <div className="App-header">
@@ -119,29 +125,6 @@ class App extends Component {
                                   active={this.state.selectedSort === 'vote'}>
                                   Vote
                     </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-              <div className='col-md-1 align-self-end'>
-                <Dropdown className='Filter' tether isOpen={this.state.filterDropdownOpen} toggle={this.toggleFilter}>
-                  <DropdownToggle caret>
-                    {this.state.selectedFilter ? capitalize(this.state.selectedFilter) : 'Category'}
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <Link to='/'>
-                      <DropdownItem onClick={this.selectFilter}
-                                    active={this.state.selectedFilter === 'all'}>
-                        all
-                      </DropdownItem>
-                    </Link>
-                    {categories.map((category) =>
-                      (<Link to={`${category.name}`}
-                             key={`${category.path}`}>
-                        <DropdownItem 
-                          active={this.state.selectedFilter === category.name}
-                          onClick={this.selectFilter}>{category.name}
-                        </DropdownItem>
-                       </Link>))}
                   </DropdownMenu>
                 </Dropdown>
               </div>

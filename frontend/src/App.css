@@ -65,3 +65,8 @@
 p, h1, h2, h3 {
   word-wrap: break-word;
 }
+
+.nav-link {
+  margin-left: 10px;
+  margin-right: 10px;
+}

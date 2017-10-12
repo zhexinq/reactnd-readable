@@ -3,7 +3,7 @@ import logo from '../anonymous-logo.svg'
 import '../App.css';
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
-import { fetchCategories, addPost, fetchPosts } from '../actions'
+// import { fetchCategories, addPost, fetchPosts } from '../actions'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button,
 Modal, ModalHeader, ModalBody, Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap'
 import AddOrEditPostForm from './AddOrEditPostForm'
@@ -12,6 +12,8 @@ import PostDetailView from './PostDetailView'
 import { withRouter } from 'react-router'
 import PostsMainView from './PostsMainView'
 import capitalize from 'capitalize'
+import { addPost, fetchPosts } from '../actions/posts'
+import { fetchCategories } from '../actions/categories'
 
 class App extends Component {
   constructor(props) {

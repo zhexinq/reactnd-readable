@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import like from "../assets/like.svg"
 import dislike from "../assets/dislike.svg"
 import { connect } from 'react-redux'
-import { fetchVotePost, fetchVoteComment } from '../actions'
 import { CardBlock, CardLink } from 'reactstrap'
+import { fetchVoteComment } from '../actions/comments'
+import { fetchVotePost } from '../actions/posts'
 
 
 class VoteBox extends Component {

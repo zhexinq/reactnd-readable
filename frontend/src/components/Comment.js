@@ -3,8 +3,8 @@ import VoteBox from './VoteBox'
 import { Button } from 'reactstrap'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
-import { fetchEditComment, fetchDeleteComment } from '../actions'
 import { connect } from 'react-redux'
+import * as commentActions from '../actions/comments'
 
 class Comment extends Component {
   constructor(props) {
@@ -104,8 +104,8 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    editComment: (id, edit) => fetchEditComment(id, edit)(dispatch),
-    deleteComment: (id) => fetchDeleteComment(id)(dispatch)
+    editComment: (id, edit) => commentActions.fetchEditComment(id, edit)(dispatch),
+    deleteComment: (id) => commentActions.fetchDeleteComment(id)(dispatch)
   }
 }
 

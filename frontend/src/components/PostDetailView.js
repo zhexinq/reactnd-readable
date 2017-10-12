@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import { Jumbotron, Button, Modal, ModalHeader, ModalBody, Badge } from 'reactstrap'
 import VoteBox from './VoteBox'
 import { withRouter } from 'react-router'
-import { fetchPost, fetchComments, fetchEditPost, fetchAddComment, fetchDeletePost } from '../actions'
 import Comment from './Comment'
 import AddOrEditPostForm from './AddOrEditPostForm'
 import AddOrEditCommentForm from './AddOrEditCommentForm'
 import uuid from 'uuid/v4'
+import * as postActions from '../actions/posts'
+import * as commentActions from '../actions/comments'
 
 export const REACT_SERVER = 'http://localhost:3000/'
 
@@ -153,11 +154,11 @@ function mapStateToProps({ posts, comments }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getPost: (id) => fetchPost(id)(dispatch),
-    getComments: (id) => fetchComments(id)(dispatch),
-    editPost: (id, edit) => fetchEditPost(id, edit)(dispatch),
-    deletePost: (id) => fetchDeletePost(id)(dispatch),
-    addComment: (comment) => fetchAddComment(comment)(dispatch)
+    getPost: (id) => postActions.fetchPost(id)(dispatch),
+    getComments: (id) => commentActions.fetchComments(id)(dispatch),
+    editPost: (id, edit) => postActions.fetchEditPost(id, edit)(dispatch),
+    deletePost: (id) => postActions.fetchDeletePost(id)(dispatch),
+    addComment: (comment) => commentActions.fetchAddComment(comment)(dispatch)
   }
 }
 

@@ -3,7 +3,7 @@ import { Card, CardText, CardBlock, CardTitle, CardSubtitle, Button, Modal, Moda
 import VoteBox from './VoteBox'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { fetchEditPost, fetchDeletePost } from '../actions'
+import * as postActions from '../actions/posts'
 import { REACT_SERVER } from './PostDetailView'
 import AddOrEditPostForm from './AddOrEditPostForm'
 
@@ -98,8 +98,8 @@ function mapStateToProps({ posts }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    editPost: (id, edit) => fetchEditPost(id, edit)(dispatch),
-    deletePost: (id) => fetchDeletePost(id)(dispatch)
+    editPost: (id, edit) => postActions.fetchEditPost(id, edit)(dispatch),
+    deletePost: (id) => postActions.fetchDeletePost(id)(dispatch)
   }
 }
 

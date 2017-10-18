@@ -105,43 +105,46 @@ class PostDetailView extends Component {
       parentId: post ? post.id : ''
     }
 
-    return ( post ?
-      <div className="container" style={postStyle}>
-        <Jumbotron>
-          <h1 className="display-3">{post && post.title}</h1>
-          <p className="lead">{post && post.author}, {post && this.toDate(post.timestamp)}</p><Badge>{comments.length} comments</Badge>
-          <hr className="my-2" />
-          <p className="lead">{post && post.body}</p>
-          <hr className="my-2" />
-          <Button color="primary" style={buttonStyle} onClick={this.toggleEditPost}>Edit</Button>
-          <Button color="danger" style={buttonStyle} onClick={this.onDeletePost} value={JSON.stringify(post)}>Delete</Button>
-          <Button color="secondary" style={buttonStyle} onClick={this.toggleAddComment}>Comment</Button>
-          <VoteBox post={post} />
-        </Jumbotron>
+    if (post) {
+      return (
+        <div className="container" style={postStyle}>
+          <Jumbotron>
+            <h1 className="display-3">{post && post.title}</h1>
+            <p className="lead">{post && post.author}, {post && this.toDate(post.timestamp)}</p><Badge>{comments.length} comments</Badge>
+            <hr className="my-2" />
+            <p className="lead">{post && post.body}</p>
+            <hr className="my-2" />
+            <Button color="primary" style={buttonStyle} onClick={this.toggleEditPost}>Edit</Button>
+            <Button color="danger" style={buttonStyle} onClick={this.onDeletePost} value={JSON.stringify(post)}>Delete</Button>
+            <Button color="secondary" style={buttonStyle} onClick={this.toggleAddComment}>Comment</Button>
+            <VoteBox post={post} />
+          </Jumbotron>
 
-        <div className="container">
-          {comments && comments.map(comment => comment && !comment.parentDeleted && (<Comment key={comment.id} comment={comment} toDate={this.toDate} />))}
-          {(!comments || comments.length === 0) && post && <p>No one leaves a comment yet.</p>}
+          <div className="container">
+            {comments && comments.map(comment => comment && !comment.parentDeleted && (<Comment key={comment.id} comment={comment} toDate={this.toDate} />))}
+            {(!comments || comments.length === 0) && post && <p>No one leaves a comment yet.</p>}
+          </div>
+
+          <Modal isOpen={this.state.editPostModalOpen} toggle={this.toggleEditPost}>
+            <ModalHeader toggle={this.toggleEditPost}>Edit post</ModalHeader>
+            <ModalBody>
+              <AddOrEditPostForm onSubmit={this.onEditPostSubmit} defaultValues={defaultPostValues} edit />
+            </ModalBody>
+          </Modal>
+
+          <Modal isOpen={this.state.addCommentModalOpen} toggle={this.toggleAddComment}>
+            <ModalHeader toggle={this.toggleAddComment}>Leave a comment</ModalHeader>
+            <ModalBody>
+              <AddOrEditCommentForm onSubmit={this.onAddCommentSubmit} defaultValues={defaultCommentValues} />
+            </ModalBody>
+          </Modal>
+
         </div>
-
-        <Modal isOpen={this.state.editPostModalOpen} toggle={this.toggleEditPost}>
-          <ModalHeader toggle={this.toggleEditPost}>Edit post</ModalHeader>
-          <ModalBody>
-            <AddOrEditPostForm onSubmit={this.onEditPostSubmit} defaultValues={defaultPostValues} edit />
-          </ModalBody>
-        </Modal>
-
-        <Modal isOpen={this.state.addCommentModalOpen} toggle={this.toggleAddComment}>
-          <ModalHeader toggle={this.toggleAddComment}>Leave a comment</ModalHeader>
-          <ModalBody>
-            <AddOrEditCommentForm onSubmit={this.onAddCommentSubmit} defaultValues={defaultCommentValues} />
-          </ModalBody>
-        </Modal>
-
-      </div> :
-      <div>The post doesn't exist</div>
-    )
-
+      )
+    } else {
+      window.location.assign(REACT_SERVER)
+      return <div>The post doesn't exist</div>
+    }
   }
 }
 
